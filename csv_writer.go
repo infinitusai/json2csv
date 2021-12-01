@@ -29,9 +29,9 @@ const (
 // CSVWriter writes CSV data.
 type CSVWriter struct {
 	*csv.Writer
-	HeaderStyle    KeyStyle
-	Transpose      bool
-	OrderByLexical bool
+	HeaderStyle KeyStyle
+	Transpose   bool
+	SortFunc    func(d sort.Interface)
 }
 
 // NewCSVWriter returns new CSVWriter with JSONPointerStyle.
@@ -40,7 +40,7 @@ func NewCSVWriter(w io.Writer) *CSVWriter {
 		csv.NewWriter(w),
 		JSONPointerStyle,
 		false,
-		false,
+		nil,
 	}
 }
 
@@ -58,8 +58,8 @@ func (w *CSVWriter) writeCSV(results []KeyValue) error {
 	if err != nil {
 		return err
 	}
-	if w.OrderByLexical {
-		sort.Sort(pointersByLexical(pts))
+	if w.SortFunc != nil {
+		w.SortFunc(pts)
 	} else {
 		sort.Sort(pts)
 	}
@@ -91,8 +91,8 @@ func (w *CSVWriter) writeTransposedCSV(results []KeyValue) error {
 	if err != nil {
 		return err
 	}
-	if w.OrderByLexical {
-		sort.Sort(pointersByLexical(pts))
+	if w.SortFunc != nil {
+		w.SortFunc(pts)
 	} else {
 		sort.Sort(pts)
 	}
