@@ -31,7 +31,7 @@ type CSVWriter struct {
 	*csv.Writer
 	HeaderStyle KeyStyle
 	Transpose   bool
-	SortFunc    func(d sort.Interface)
+	SortFunc    func(d []jsonpointer.JSONPointer)
 }
 
 // NewCSVWriter returns new CSVWriter with JSONPointerStyle.
