@@ -129,9 +129,13 @@ func (p JSONPointer) DotNotation(bracketIndex bool) string {
 	return strings.Join(tokens, ".")
 }
 
-func (p JSONPointer) ReadableNotation() string {
+func (p JSONPointer) ReadableNotation(skipFirst bool) string {
 	tokens := make([]string, 0, len(p))
-	for _, token := range p {
+	shouldSkip := skipFirst && len(p) > 1
+	for i, token := range p {
+		if i == 0 && shouldSkip {
+			continue
+		}
 		if token.IsIndex() {
 			// foo #1 style
 			index, _ := strconv.Atoi(token.EscapedString())

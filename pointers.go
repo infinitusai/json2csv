@@ -49,10 +49,10 @@ func (pts pointers) DotNotations(bracketIndex bool) []string {
 	return keys
 }
 
-func (pts pointers) ReadableNotations() []string {
+func (pts pointers) ReadableNotations(skipFirst bool) []string {
 	keys := make([]string, 0, pts.Len())
 	for _, p := range pts {
-		keys = append(keys, p.ReadableNotation())
+		keys = append(keys, p.ReadableNotation(skipFirst))
 	}
 	return keys
 }
