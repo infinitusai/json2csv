@@ -20,7 +20,6 @@ func TestKeyWithTrailingSpace(t *testing.T) {
 			"C  ": "BAR",
 		},
 	}
-	wr.HeaderStyle = ReadableNotationStyle
 	csvContent, err := JSON2CSV(responses) // csvContent seems to be complete!
 	if err != nil {
 		t.Fatal(err)
