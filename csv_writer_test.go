@@ -1,15 +1,13 @@
-package json2csv_test
+package json2csv
 
 import (
 	"bytes"
 	"testing"
-
-	"github.com/yukithm/json2csv"
 )
 
 func TestKeyWithTrailingSpace(t *testing.T) {
 	b := &bytes.Buffer{}
-	wr := json2csv.NewCSVWriter(b)
+	wr := NewCSVWriter(b)
 	responses := []map[string]interface{}{
 		{
 			" A":  1,
@@ -22,8 +20,8 @@ func TestKeyWithTrailingSpace(t *testing.T) {
 			"C  ": "BAR",
 		},
 	}
-
-	csvContent, err := json2csv.JSON2CSV(responses) // csvContent seems to be complete!
+	wr.HeaderStyle = ReadableNotationStyle
+	csvContent, err := JSON2CSV(responses) // csvContent seems to be complete!
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -34,6 +32,50 @@ func TestKeyWithTrailingSpace(t *testing.T) {
 	want := `/ A,/B ,/C  
 1,foo,FOO
 2,bar,BAR
+`
+
+	if got != want {
+		t.Errorf("Expected %v, but %v", want, got)
+	}
+}
+
+func TestKeysWithReadableNotationStyle(t *testing.T) {
+	b := &bytes.Buffer{}
+	wr := NewCSVWriter(b)
+	responses := []map[string]interface{}{
+		{
+			"Test":  1,
+			"thisIsATest":  map[string]interface{}{
+				"withADot": "foo",
+				"withADotTwo": "foo2",
+				"withAnother": map[string]interface{}{
+					"dot": "foo3",
+				},
+			},
+		},
+		{
+			"Test":  2,
+			"thisIsATest":  map[string]interface{}{
+				"withADot": "bar",
+				"withADotTwo": "bar2",
+				"withAnother": map[string]interface{}{
+					"dot": "bar3",
+				},
+			},
+		},
+	}
+	wr.HeaderStyle = ReadableNotationStyle
+	csvContent, err := JSON2CSV(responses) // csvContent seems to be complete!
+	if err != nil {
+		t.Fatal(err)
+	}
+	wr.WriteCSV(csvContent)
+	wr.Flush()
+
+	got := b.String()
+	want := `Test,This Is A Test: With A Dot,This Is A Test: With A Dot Two,This Is A Test: With Another: Dot
+1,foo,foo2,foo3
+2,bar,bar2,bar3
 `
 
 	if got != want {

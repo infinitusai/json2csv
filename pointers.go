@@ -3,7 +3,7 @@ package json2csv
 import (
 	"strings"
 
-	"github.com/yukithm/json2csv/jsonpointer"
+	"github.com/infinitusai/json2csv/jsonpointer"
 )
 
 type pointers []jsonpointer.JSONPointer
@@ -45,6 +45,14 @@ func (pts pointers) DotNotations(bracketIndex bool) []string {
 	keys := make([]string, 0, pts.Len())
 	for _, p := range pts {
 		keys = append(keys, p.DotNotation(bracketIndex))
+	}
+	return keys
+}
+
+func (pts pointers) ReadableNotations() []string {
+	keys := make([]string, 0, pts.Len())
+	for _, p := range pts {
+		keys = append(keys, p.ReadableNotation())
 	}
 	return keys
 }
