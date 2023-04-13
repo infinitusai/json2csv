@@ -50,6 +50,7 @@ func TestKeysWithReadableNotationStyle(t *testing.T) {
 				"withAnother": map[string]interface{}{
 					"dot": "foo3",
 				},
+				"withArray": []interface{}{"foo4", "foo5"},
 			},
 		},
 		{
@@ -60,6 +61,7 @@ func TestKeysWithReadableNotationStyle(t *testing.T) {
 				"withAnother": map[string]interface{}{
 					"dot": "bar3",
 				},
+				"withArray": []interface{}{"bar4", "bar5"},
 			},
 		},
 	}
@@ -72,9 +74,9 @@ func TestKeysWithReadableNotationStyle(t *testing.T) {
 	wr.Flush()
 
 	got := b.String()
-	want := `Test,This Is A Test: With A Dot,This Is A Test: With A Dot Two,This Is A Test: With Another: Dot
-1,foo,foo2,foo3
-2,bar,bar2,bar3
+	want := `Test,This Is A Test: With A Dot,This Is A Test: With A Dot Two,This Is A Test: With Another: Dot,This Is A Test: With Array #1,This Is A Test: With Array #2
+1,foo,foo2,foo3,foo4,foo5
+2,bar,bar2,bar3,bar4,bar5
 `
 
 	if got != want {

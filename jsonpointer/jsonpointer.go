@@ -133,8 +133,9 @@ func (p JSONPointer) ReadableNotation() string {
 	tokens := make([]string, 0, len(p))
 	for _, token := range p {
 		if token.IsIndex() {
-			// foo[0] style
-			tokens[len(tokens)-1] += fmt.Sprintf("[%s]", token)
+			// foo #1 style
+			index, _ := strconv.Atoi(token.EscapedString())
+			tokens[len(tokens)-1] += fmt.Sprintf(" #%d", index  + 1)
 		} else {
 			tokens = append(tokens, camelCaseToReadableString(string(token)))
 		}
