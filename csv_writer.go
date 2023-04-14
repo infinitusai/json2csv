@@ -5,7 +5,7 @@ import (
 	"io"
 	"sort"
 
-	"github.com/yukithm/json2csv/jsonpointer"
+	"github.com/infinitusai/json2csv/jsonpointer"
 )
 
 // KeyStyle represents the specific style of the key.
@@ -24,6 +24,12 @@ const (
 
 	// "foo.bar[0].baz"
 	DotBracketStyle
+
+	// "foo: bar #1: baz"
+	ReadableNotationStyle
+
+	// "foo: bar #1: baz"
+	InfinitusNotationStyle
 )
 
 // CSVWriter writes CSV data.
@@ -141,6 +147,11 @@ func (w *CSVWriter) getHeader(pointers pointers) []string {
 		return pointers.DotNotations(false)
 	case DotBracketStyle:
 		return pointers.DotNotations(true)
+	case ReadableNotationStyle:
+		return pointers.ReadableNotations(false)
+	case InfinitusNotationStyle:
+		return pointers.ReadableNotations(true)
+
 	default:
 		return pointers.Strings()
 	}

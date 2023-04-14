@@ -129,6 +129,37 @@ func (p JSONPointer) DotNotation(bracketIndex bool) string {
 	return strings.Join(tokens, ".")
 }
 
+func (p JSONPointer) ReadableNotation(skipFirst bool) string {
+	tokens := make([]string, 0, len(p))
+	shouldSkip := skipFirst && len(p) > 1
+	for i, token := range p {
+		if i == 0 && shouldSkip {
+			continue
+		}
+		if token.IsIndex() {
+			// foo #1 style
+			index, _ := strconv.Atoi(token.EscapedString())
+			tokens[len(tokens)-1] += fmt.Sprintf(" #%d", index  + 1)
+		} else {
+			tokens = append(tokens, camelCaseToReadableString(string(token)))
+		}
+	}
+	return strings.Join(tokens, ": ")
+}
+
+func camelCaseToReadableString(s string) string {
+	var result string
+	for i, c := range s {
+		if i > 0 && c >= 'A' && c <= 'Z' {
+			if i < len(s) - 1 && (s[i+1] >= 'a' && s[i+1] <= 'z' && s[i-1] != ' ' || s[i-1] >= 'a' && s[i-1] <= 'z') {
+				result += " "
+			}
+		}
+		result += string(c)
+	}
+	return strings.Title(result)
+}
+
 // Get retrieves a value from the obj.
 func (p JSONPointer) Get(obj interface{}) (value interface{}, err error) {
 	defer func() {
