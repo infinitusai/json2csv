@@ -38,6 +38,40 @@ func TestKeyWithTrailingSpace(t *testing.T) {
 	}
 }
 
+func TestKeyWithCapitalizedWords(t *testing.T) {
+	b := &bytes.Buffer{}
+	wr := NewCSVWriter(b)
+	wr.HeaderStyle = InfinitusNotationStyle
+	responses := []map[string]interface{}{
+		{
+			"BCDTest":  1,
+			"abcBCD":  "foo",
+			"ABC Test": "FOO",
+		},
+		{
+			"BCDTest":  2,
+			"abcBCD":  "bar",
+			"ABC Test": "BAR",
+		},
+	}
+	csvContent, err := JSON2CSV(responses) // csvContent seems to be complete!
+	if err != nil {
+		t.Fatal(err)
+	}
+	wr.WriteCSV(csvContent)
+	wr.Flush()
+
+	got := b.String()
+	want := `ABC Test,BCD Test,Abc BCD
+FOO,1,foo
+BAR,2,bar
+`
+
+	if got != want {
+		t.Errorf("Expected %v, but %v", want, got)
+	}
+}
+
 func TestKeysWithReadableNotationStyle(t *testing.T) {
 	got, err := writeCSVHelper(ReadableNotationStyle)
 	if err != nil {
@@ -69,6 +103,7 @@ func TestKeysWithInfinitusNotationStyle(t *testing.T) {
 	}
 
 }
+
 
 func writeCSVHelper(style KeyStyle) (string, error) {
 	responses := getTestResponse()

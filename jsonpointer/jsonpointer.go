@@ -151,7 +151,9 @@ func camelCaseToReadableString(s string) string {
 	var result string
 	for i, c := range s {
 		if i > 0 && c >= 'A' && c <= 'Z' {
-			result += " "
+			if i < len(s) - 1 && (s[i+1] >= 'a' && s[i+1] <= 'z' && s[i-1] != ' ' || s[i-1] >= 'a' && s[i-1] <= 'z') {
+				result += " "
+			}
 		}
 		result += string(c)
 	}
