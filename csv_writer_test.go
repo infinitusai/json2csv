@@ -45,12 +45,12 @@ func TestKeyWithCapitalizedWords(t *testing.T) {
 	responses := []map[string]interface{}{
 		{
 			"BCDTest":  1,
-			"abcBCD":  "foo",
+			"abcBCD":   "foo",
 			"ABC Test": "FOO",
 		},
 		{
 			"BCDTest":  2,
-			"abcBCD":  "bar",
+			"abcBCD":   "bar",
 			"ABC Test": "BAR",
 		},
 	}
@@ -85,7 +85,6 @@ func TestKeysWithReadableNotationStyle(t *testing.T) {
 	if got != want {
 		t.Errorf("Expected %v, but %v", want, got)
 	}
-
 }
 
 func TestKeysWithInfinitusNotationStyle(t *testing.T) {
@@ -101,9 +100,33 @@ func TestKeysWithInfinitusNotationStyle(t *testing.T) {
 	if got != want {
 		t.Errorf("Expected %v, but %v", want, got)
 	}
-
 }
 
+func TestFieldsWithNilValues(t *testing.T) {
+	b := &bytes.Buffer{}
+	wr := NewCSVWriter(b)
+	responses := []map[string]interface{}{
+		{
+			"A": 1,
+			"B": "foo",
+			"C": nil,
+		},
+	}
+	csvContent, err := JSON2CSV(responses)
+	if err != nil {
+		t.Fatal(err)
+	}
+	wr.WriteCSV(csvContent)
+	wr.Flush()
+
+	got := b.String()
+	want := `/A,/B,/C
+1,foo,null
+`
+	if got != want {
+		t.Errorf("Expected %v, but %v", want, got)
+	}
+}
 
 func writeCSVHelper(style KeyStyle) (string, error) {
 	responses := getTestResponse()
@@ -123,9 +146,9 @@ func writeCSVHelper(style KeyStyle) (string, error) {
 func getTestResponse() []map[string]interface{} {
 	return []map[string]interface{}{
 		{
-			"Test":  1,
-			"thisIsATest":  map[string]interface{}{
-				"withADot": "foo",
+			"Test": 1,
+			"thisIsATest": map[string]interface{}{
+				"withADot":    "foo",
 				"withADotTwo": "foo2",
 				"withAnother": map[string]interface{}{
 					"dot": "foo3",
@@ -144,9 +167,9 @@ func getTestResponse() []map[string]interface{} {
 			},
 		},
 		{
-			"Test":  2,
-			"thisIsATest":  map[string]interface{}{
-				"withADot": "bar",
+			"Test": 2,
+			"thisIsATest": map[string]interface{}{
+				"withADot":    "bar",
 				"withADotTwo": "bar2",
 				"withAnother": map[string]interface{}{
 					"dot": "bar3",

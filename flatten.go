@@ -46,6 +46,12 @@ func flatten(obj interface{}) (KeyValue, error) {
 }
 
 func _flatten(out KeyValue, obj interface{}, key jsonpointer.JSONPointer) error {
+	// Include nil value in the CSV so that the columns do not dependent
+	// on whether the Json field is present or not.
+	if obj == nil {
+		out[key.String()] = "null"
+	}
+
 	value, ok := obj.(reflect.Value)
 	if !ok {
 		value = reflect.ValueOf(obj)
